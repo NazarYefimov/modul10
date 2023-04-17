@@ -1,0 +1,40 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
+
+class WordFrequencyCounter {
+    public static void main(String[] args) {
+        String filename = "words.txt"; 
+        Map<String, Integer> wordFreq = getWordFrequency(filename); 
+        printWordFrequency(wordFreq); 
+    }
+
+    public static Map<String, Integer> getWordFrequency(String filename) {
+        Map<String, Integer> wordFreq = new HashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] words = line.trim().split("\\s+"); 
+                for (String word : words) {
+                    wordFreq.put(word, wordFreq.getOrDefault(word, 0) + 1); 
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return wordFreq;
+    }
+
+    public static void printWordFrequency(Map<String, Integer> wordFreq) {
+        PriorityQueue<Map.Entry<String, Integer>> pq = new PriorityQueue<>(
+                (a, b) -> b.getValue() - a.getValue()); 
+        pq.addAll(wordFreq.entrySet());
+        while (!pq.isEmpty()) {
+            Map.Entry<String, Integer> entry = pq.poll();
+            System.out.println(entry.getKey() + " " + entry.getValue());
+        }
+    }
+}
